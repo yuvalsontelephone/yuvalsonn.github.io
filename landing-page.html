@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Blaze Gangs Landing</title>
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    color: white;
+    user-select: none;
+}
+.language-switcher {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+}
+.language-switcher button {
+    background: rgba(40,40,40,0.8);
+    color: white;
+    border: 1px solid #555;
+    padding: 5px 10px;
+    margin: 5px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+body {
+    background: #111;
+    overflow: hidden;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    font-family: 'Poppins', sans-serif;
+}
+
+.desert-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    background: linear-gradient(to bottom, #111 0%, #222 100%);
+    overflow: hidden;
+}
+
+.dune {
+    position: absolute;
+    bottom: 0;
+    width: 300%;
+    height: 150px;
+    background: linear-gradient(90deg, #1a1a1a 0%, #2a2a2a 50%, #1a1a1a 100%);
+    animation: duneMove 60s linear infinite;
+}
+
+.dune:nth-child(1) {
+    height: 200px;
+    bottom: 50px;
+    opacity: 0.8;
+    animation-duration: 80s;
+}
+
+.dune:nth-child(2) {
+    height: 180px;
+    bottom: 30px;
+    opacity: 0.6;
+    animation-duration: 100s;
+    animation-direction: reverse;
+}
+
+.dune:nth-child(3) {
+    height: 160px;
+    bottom: 10px;
+    opacity: 0.4;
+    animation-duration: 120s;
+}
+
+@keyframes duneMove {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+}
+
+.star {
+    position: absolute;
+    background-color: #444;
+    border-radius: 50%;
+    animation: twinkle 5s infinite alternate;
+}
+
+@keyframes twinkle {
+    0% { opacity: 0.2; }
+    100% { opacity: 0.8; }
+}
+
+.main-panel {
+    background-color: rgba(30, 30, 30, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    padding: 30px;
+    width: 90%;
+    max-width: 700px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+    transform: scale(0.9) translateY(20px);
+    opacity: 0;
+    transition: all 1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    transform-style: preserve-3d;
+    perspective: 1000px;
+    will-change: transform;
+}
+
+.main-panel.active {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+}
+
+.profile-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 30px;
+    transform: translateX(-50px);
+    opacity: 0;
+    transition: all 0.8s ease 0.3s;
+}
+
+.main-panel.active .profile-header {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.profile-picture {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 3px solid #555;
+    margin-right: 20px;
+    transition: transform 0.5s ease, border-color 0.3s;
+    transform: scale(0);
+}
+
+.main-panel.active .profile-picture {
+    transform: scale(1);
+}
+
+.profile-picture:hover {
+    transform: scale(1.05) !important;
+    border-color: #777;
+}
+
+.username {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+    color: #fff;
+    transform: translateY(20px);
+    opacity: 0;
+    transition: all 0.8s ease 0.4s;
+    font-family: 'Orbitron', sans-serif;
+    text-decoration: none;
+    position: relative;
+    display: inline-block;
+    text-shadow: 0 0 8px rgba(255, 255, 255, 0.5);
+}
+
+.username::after {
+    content: '';
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 2px;
+    background: white;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.username:hover::after {
+    transform: scaleX(1);
+}
+
+.username:hover {
+    text-shadow: 0 0 12px rgba(255, 255, 255, 0.8);
+}
+
+.main-panel.active .username {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.servers-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    transform: translateY(30px);
+    opacity: 0;
+    transition: all 0.8s ease 0.6s;
+}
+
+.main-panel.active .servers-container {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.server-card {
+    background-color: rgba(40, 40, 40, 0.8);
+    border-radius: 15px;
+    padding: 15px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.4s ease;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    text-decoration: none;
+    transform: translateX(30px);
+    opacity: 0;
+}
+
+.main-panel.active .server-card {
+    transform: translateX(0);
+    opacity: 1;
+}
+
+.server-card:hover {
+    transform: translateY(-5px) !important;
+    background-color: rgba(70, 70, 70, 0.9);
+    border-color: #888;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+}
+
+.server-logo {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 15px;
+    border: 2px solid #666;
+    transition: transform 0.3s ease;
+}
+
+.server-card:hover .server-logo {
+    transform: rotate(15deg) scale(1.1);
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.1);
+}
+
+.server-info {
+    flex: 1;
+}
+
+.server-name {
+    font-size: 1.6rem;
+    font-weight: 700;
+    margin-bottom: 0;
+    color: #ddd;
+    transition: color 0.3s;
+}
+
+.server-card:hover .server-name {
+    color: #fff;
+}
+
+.join-button {
+    background-color: #444;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 8px 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    transform: scale(0.9);
+    opacity: 0.8;
+    position: relative;
+    overflow: hidden;
+    box-shadow: 0 0 0 rgba(255, 255, 255, 0);
+}
+
+.join-button::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background: linear-gradient(
+        to bottom right,
+        rgba(255, 255, 255, 0) 45%,
+        rgba(255, 255, 255, 0.1) 50%,
+        rgba(255, 255, 255, 0) 55%
+    );
+    transform: rotate(30deg);
+    opacity: 0;
+    transition: all 0.5s ease;
+}
+
+.server-card:hover .join-button {
+    background-color: #555;
+    transform: scale(1);
+    opacity: 1;
+    box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+}
+
+.server-card:hover .join-button::before {
+    animation: shine 1.5s ease;
+}
+
+@keyframes shine {
+    0% {
+        transform: rotate(30deg) translate(-30%, -30%);
+        opacity: 0;
+    }
+    20% {
+        opacity: 0.5;
+    }
+    100% {
+        transform: rotate(30deg) translate(30%, 30%);
+        opacity: 0;
+    }
+}
+
+.enter-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    cursor: pointer;
+}
+
+.enter-text {
+    font-size: 2rem;
+    font-weight: 500;
+    text-align: center;
+    cursor: pointer;
+    animation: pulse 2s infinite;
+    color: #fff;
+    transition: all 0.5s ease;
+}
+
+.enter-text.hidden {
+    opacity: 0;
+    transform: translateY(-20px);
+    pointer-events: none;
+}
+
+.music-controls {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background-color: rgba(40, 40, 40, 0.8);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 30px;
+    padding: 8px 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    backdrop-filter: blur(5px);
+    z-index: 100;
+    transform: translateY(-50px);
+    opacity: 0;
+    transition: all 0.8s ease 0.8s;
+}
+
+.music-controls.active {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.music-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.volume-container {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.volume-slider {
+    width: 80px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    height: 4px;
+    background: #555;
+    border-radius: 2px;
+    transition: all 0.3s;
+}
+
+.volume-slider:hover {
+    height: 6px;
+    background: #666;
+}
+
+.volume-slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 12px;
+    height: 12px;
+    background: #888;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.volume-slider::-webkit-slider-thumb:hover {
+    background: #aaa;
+    transform: scale(1.2);
+}
+
+@keyframes pulse {
+    0% { opacity: 0.7; }
+    50% { opacity: 1; }
+    100% { opacity: 0.7; }
+}
+
+.background-video {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    z-index: -1;
+    opacity: 0.15;
+    display: none;
+}
+</style>
+</head>
+<body>
+
+<!-- Background layers -->
+<div class="desert-background">
+    <div class="dune"></div>
+    <div class="dune"></div>
+    <div class="dune"></div>
+    <div class="star" style="top: 10%; left: 15%; width:6px; height:6px; animation-delay:0s;"></div>
+    <div class="star" style="top: 30%; left: 40%; width:4px; height:4px; animation-delay:1s;"></div>
+    <div class="star" style="top: 50%; left: 70%; width:5px; height:5px; animation-delay:2s;"></div>
+    <div class="star" style="top: 70%; left: 80%; width:3px; height:3px; animation-delay:3s;"></div>
+</div>
+
+<!-- Main content panel -->
+<div class="main-panel" id="mainPanel">
+    <div class="profile-header">
+        <img src="https://media.discordapp.net/attachments/1217876786701140009/1390477590866825256/channels4_profile.jpg?ex=686866ab&is=6867152b&hm=5f031fabcb810987335ae970e06bdd1c9823de0208ec3634b4840f02d431298f&=&format=webp&width=144&height=144" alt="Profile Picture" class="profile-picture" />
+        <a href="#" class="username" tabindex="0">yuvalsonn.</a>
+    </div>
+
+    <div class="servers-container">
+        <a href="https://discord.gg/blazegangs" target="_blank" class="server-card" tabindex="0" rel="noopener noreferrer">
+            <img src="https://media.discordapp.net/attachments/1217876786701140009/1390477590866825256/channels4_profile.jpg?ex=686866ab&is=6867152b&hm=5f031fabcb810987335ae970e06bdd1c9823de0208ec3634b4840f02d431298f&=&format=webp&width=144&height=144" alt="Blaze Gangs Logo" class="server-logo" />
+            <div class="server-info">
+                <div class="server-name">Blaze Gangs</div>
+                <button class="join-button" type="button" onclick="window.open('https://discord.gg/blazegangs', '_blank')">Join</button>
+            </div>
+        </a>
+    </div>
+</div>
+
+<!-- Enter overlay -->
+<div class="enter-overlay" id="enterOverlay">
+    <div class="enter-text" id="enterText">Click to Enter</div>
+</div>
+
+<!-- Music controls -->
+<div class="music-controls" id="musicControls">
+    <button class="music-btn" id="playPauseBtn" title="Play/Pause">&#9658;</button>
+    <div class="volume-container">
+        <input type="range" id="volumeSlider" class="volume-slider" min="0" max="1" step="0.01" value="0.5" />
+    </div>
+</div>
+
+<!-- Audio element -->
+<audio id="audioPlayer" src="song.mp3" loop></audio>
+
+<!-- Language switcher -->
+<div class="language-switcher">
+    <button data-lang="en">English</button>
+    <button data-lang="he">עברית</button>
+</div>
+
+<script>
+const mainPanel = document.getElementById('mainPanel');
+const enterOverlay = document.getElementById('enterOverlay');
+const enterText = document.getElementById('enterText');
+const musicControls = document.getElementById('musicControls');
+const playPauseBtn = document.getElementById('playPauseBtn');
+const volumeSlider = document.getElementById('volumeSlider');
+const audioPlayer = document.getElementById('audioPlayer');
+const languageSwitcher = document.querySelector('.language-switcher');
+
+enterOverlay.addEventListener('click', () => {
+    enterOverlay.style.pointerEvents = 'none';
+    enterText.classList.add('hidden');
+    setTimeout(() => {
+        enterOverlay.style.display = 'none';
+        mainPanel.classList.add('active');
+        musicControls.classList.add('active');
+        audioPlayer.volume = volumeSlider.value;
+        audioPlayer.play();
+    }, 600);
+});
+
+// Play/Pause toggle
+playPauseBtn.addEventListener('click', () => {
+    if (audioPlayer.paused) {
+        audioPlayer.play();
+        playPauseBtn.innerHTML = '&#10074;&#10074;'; // pause icon
+    } else {
+        audioPlayer.pause();
+        playPauseBtn.innerHTML = '&#9658;'; // play icon
+    }
+});
+
+// Volume control
+volumeSlider.addEventListener('input', (e) => {
+    audioPlayer.volume = e.target.value;
+});
+
+// 3D rotate main card on mouse move
+mainPanel.addEventListener('mousemove', (e) => {
+    const rect = mainPanel.getBoundingClientRect();
+    const x = e.clientX - rect.left; // x inside main panel
+    const y = e.clientY - rect.top;  // y inside main panel
+
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+
+    const rotateX = ((y - centerY) / centerY) * 10; // max 10deg rotation
+    const rotateY = ((x - centerX) / centerX) * 10;
+
+    mainPanel.style.transform = `perspective(1000px) rotateX(${-rotateX}deg) rotateY(${rotateY}deg) scale(1) translateY(0)`;
+});
+
+// Reset rotation when mouse leaves
+mainPanel.addEventListener('mouseleave', () => {
+    mainPanel.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1) translateY(0)';
+});
+
+// Language switcher example (you can add your own logic)
+languageSwitcher.addEventListener('click', (e) => {
+    if (e.target.tagName === 'BUTTON') {
+        const lang = e.target.getAttribute('data-lang');
+        alert(`Switching language to: ${lang}`);
+        // Add your language switching code here
+    }
+});
+</script>
+
+</body>
+</html>
